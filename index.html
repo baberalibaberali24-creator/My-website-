@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NO ESCAPE 💀</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#ffe4ec,#ffd6f3);
+    overflow:hidden;
+    text-align:center;
+}
+
+.container{
+    position:relative;
+}
+
+img{
+    width:240px;
+    margin-bottom:20px;
+}
+
+h1{
+    color:#ff4f8b;
+    margin-bottom:20px;
+}
+
+/* BUTTON AREA FIXED */
+.buttons{
+    position:relative;
+    width:320px;
+    height:100px;
+    margin:auto;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:20px;
+}
+
+/* BUTTONS */
+button{
+    border:none;
+    cursor:pointer;
+    border-radius:12px;
+    font-weight:bold;
+    transition:0.2s;
+    color:white;
+    padding:12px 30px;
+    font-size:20px;
+}
+
+#yesBtn{
+    background:#28a745;
+    position:relative;
+}
+
+#noBtn{
+    background:#dc3545;
+    position:absolute;
+    left:140px;
+    top:25px;
+}
+
+/* HEART */
+.heart{
+    position:absolute;
+    animation:fall 3s linear forwards;
+}
+
+@keyframes fall{
+    from{transform:translateY(-50px);opacity:1;}
+    to{transform:translateY(100vh);opacity:0;}
+}
+
+/* CONFETTI */
+.confetti{
+    position:absolute;
+    animation:fall2 2s linear forwards;
+}
+
+@keyframes fall2{
+    from{transform:translateY(-50px) rotate(0);}
+    to{transform:translateY(100vh) rotate(360deg);opacity:0;}
+}
+
+/* SHAKE */
+@keyframes shake{
+    0%{transform:translate(0);}
+    25%{transform:translate(4px,4px);}
+    50%{transform:translate(-4px,4px);}
+    75%{transform:translate(4px,-4px);}
+    100%{transform:translate(0);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="container">
+
+    <img src="https://media.tenor.com/8fH8hS5G0wQAAAAi/cute-cat.gif">
+
+    <h1>Will You Be My Friend? 🤝</h1>
+
+    <div class="buttons">
+        <button id="yesBtn">Yes</button>
+        <button id="noBtn">No</button>
+    </div>
+
+</div>
+
+<script>
+
+let count = 0;
+let yesSize = 20;
+let locked = false;
+
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const container = document.getElementById("container");
+
+const messages = [
+"Are you sure?",
+"Really sure?",
+"Think again!",
+"Please 🥺",
+"Don't do this 💔",
+"Last chance!",
+"One more try!",
+"You're breaking my heart 💔",
+"Seriously? 😭",
+"Give it a chance!",
+"I'll be sad 😢",
+"Please please 🥺",
+"Final warning!",
+"YOU CAN'T ESCAPE 💀",
+"THERE IS NO ESCAPE 😈"
+];
+
+// 📳 VIBRATION
+function vibrate(){
+    if(navigator.vibrate){
+        navigator.vibrate([200,100,200,100,400]);
+    }
+}
+
+// ❤️ HEART RAIN
+function heartRain(){
+    let hearts=["❤️","💖","💘","💝"];
+
+    setInterval(()=>{
+        let h=document.createElement("div");
+        h.className="heart";
+        h.innerText=hearts[Math.floor(Math.random()*hearts.length)];
+        h.style.left=Math.random()*100+"vw";
+        h.style.fontSize=(20+Math.random()*25)+"px";
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(),3000);
+    },120);
+}
+
+// 🎉 CONFETTI
+function confetti(){
+    let items=["🎉","✨","💥","🎊"];
+
+    for(let i=0;i<50;i++){
+        let c=document.createElement("div");
+        c.className="confetti";
+        c.innerText=items[Math.floor(Math.random()*items.length)];
+        c.style.left=Math.random()*100+"vw";
+        c.style.top="-20px";
+        c.style.fontSize="18px";
+
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),2000);
+    }
+}
+
+// 😈 SAFE MOVE (NO OVERFLOW FIXED)
+function moveNoButton(){
+
+    const container = document.querySelector(".buttons");
+    const btn = noBtn;
+
+    const rect = container.getBoundingClientRect();
+
+    let maxX = rect.width - btn.offsetWidth;
+    let maxY = rect.height - btn.offsetHeight;
+
+    let x = Math.random() * maxX;
+    let y = Math.random() * maxY;
+
+    btn.style.position = "absolute";
+    btn.style.left = x + "px";
+    btn.style.top = y + "px";
+}
+
+// 😈 SHAKE
+function shake(){
+    vibrate();
+    document.body.style.animation="shake 0.2s";
+    setTimeout(()=>document.body.style.animation="",200);
+}
+
+// 💚 FINAL SCREEN
+function finalScreen(){
+    container.innerHTML=`
+        <div>
+            <img src="https://media.tenor.com/6xKJ3l6P7J8AAAAi/happy-cat.gif" style="width:240px">
+            <h1 style="color:#28a745;">
+                YAYYY! 🎉<br>
+                Yes (There is no escape) 💚
+            </h1>
+        </div>
+    `;
+}
+
+// YES CLICK
+yesBtn.addEventListener("click",()=>{
+    vibrate();
+    heartRain();
+    confetti();
+    setTimeout(finalScreen,2000);
+});
+
+// NO CLICK
+noBtn.addEventListener("click",()=>{
+
+    if(locked) return;
+
+    shake();
+
+    if(count < messages.length){
+        noBtn.innerText = messages[count];
+    }
+
+    count++;
+
+    moveNoButton();
+
+    if(yesSize < 90){
+        yesSize += 5;
+        yesBtn.style.fontSize = yesSize + "px";
+    }
+
+    // FINAL MODE
+    if(count >= 15){
+        locked = true;
+
+        noBtn.innerText = "Yes (There is no escape) 💚";
+        noBtn.style.background = "#28a745";
+        noBtn.style.position = "relative";
+
+        noBtn.onclick = () => {
+            vibrate();
+            heartRain();
+            confetti();
+            setTimeout(finalScreen,2000);
+        };
+    }
+});
+
+</script>
+
+</body>
+</html>
